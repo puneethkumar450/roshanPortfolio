@@ -1,0 +1,42 @@
+    <article id="{{slug}}" class="proj{{side}}" style="{{vars}}" data-now="{{no}} {{name}}" data-key="{{slug}}" data-nav-key="work" aria-labelledby="{{slug}}-t">
+      <div class="op wrap">
+        <p class="op-meta mono"><span>{{no}} / {{total}}</span><span>{{sector}}</span><span>{{!disciplines}}</span><span class="op-st"><i class="dot{{dot_mod}}" aria-hidden="true"></i><span>{{!status}}</span></span></p>
+        <div class="op-row">
+          <h2 id="{{slug}}-t" class="op-title">{{name}}</h2>
+          <p class="op-headline">{{headline}}</p>
+        </div>
+      </div>
+      <div class="pj g12 wrap">
+        <figure class="pj-cover"><img src="{{dir}}/cover-1200.webp" srcset="{{dir}}/cover-720.webp 720w, {{dir}}/cover-1200.webp 1200w, {{dir}}/cover-1800.webp 1800w" sizes="(max-width: 1023px) 100vw, 66vw" width="{{cover_w}}" height="{{cover_h}}" loading="lazy" decoding="async" style="background:{{cover_avg}}" alt="{{cover_alt}}"></figure>
+        <div class="pj-text">
+          <div class="pj-sec">
+            <h3 class="h3">The challenge</h3>
+            <p>{{challenge}}</p>
+          </div>
+          <div class="pj-sec">
+            <h3 class="h3">The approach</h3>
+            <p>{{approach}}</p>
+          </div>
+          <div class="pj-sec idea">
+            <h3 class="h3">The idea</h3>
+            <blockquote><p>{{!idea}}</p></blockquote>
+          </div>
+          <div class="pj-sec">
+            <h3 class="h3">Deliverables</h3>
+            <ul class="deliv">
+{{!deliverables}}
+            </ul>
+          </div>
+        </div>
+        <div class="pal">
+          <div class="pal-head">
+            <h3 class="h3">Palette</h3>
+            <p class="mono">{{palette_note}}<span class="needs-js"> · select one to copy its HEX</span></p>
+          </div>
+          <ul class="pal-bar">
+{{!chips}}
+          </ul>
+        </div>
+      </div>
+{{!board}}
+    </article>

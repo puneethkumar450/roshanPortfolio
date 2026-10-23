@@ -1,0 +1,23 @@
+{
+  "_about": "Colour roles for each project section. Words live in content.json; this file only maps each brand's palette onto the page. Every ground comes from the brand's own palette, and the five grounds are chosen to differ from each other in hue and lightness so each section reads as its own brand. bg/fg/mut paint the section (fg and mut need 4.5:1 on bg), the project name is set in fg (never in a logo colour), stage_* paint the dark 'light table' band behind the board so the board's own edges always read (a neutral stage where the board is mostly the section's own hue). tools/build_site.py checks every pair and refuses to build if one fails. A project without an entry here gets a theme derived from its palette.",
+  "goodshift": {
+    "bg": "#84BD40", "fg": "#1A1A1A", "mut": "#1A1A1A", "line": "rgba(26,26,26,.34)",
+    "stage": "#1A1A1A", "stage_fg": "#F6F2EA", "stage_mut": "#BDB8AE", "stage_line": "rgba(246,242,234,.18)", "thumb": "#E85D28"
+  },
+  "heibuddy": {
+    "bg": "#F65B4B", "fg": "#1F1F1F", "mut": "#1F1F1F", "line": "rgba(31,31,31,.34)",
+    "stage": "#1F1F1F", "stage_fg": "#FFF6E8", "stage_mut": "#E0D9CC", "stage_line": "rgba(255,246,232,.18)", "thumb": "#F65B4B"
+  },
+  "iccs": {
+    "bg": "#D1C3F8", "fg": "#03017B", "mut": "#03017B", "line": "rgba(3,1,123,.3)",
+    "stage": "#141416", "stage_fg": "#FFFFFF", "stage_mut": "#C4C6DA", "stage_line": "rgba(209,195,248,.3)", "thumb": "#D1C3F8"
+  },
+  "vega": {
+    "bg": "#1A3D59", "fg": "#F4EFE6", "mut": "#A9BCCB", "line": "rgba(244,239,230,.24)",
+    "stage": "#0D2131", "stage_fg": "#F4EFE6", "stage_mut": "#A9BCCB", "stage_line": "rgba(244,239,230,.18)", "thumb": "#FE5722"
+  },
+  "netpure": {
+    "bg": "#FEBE10", "fg": "#333333", "mut": "#333333", "line": "rgba(51,51,51,.34)",
+    "stage": "#333333", "stage_fg": "#F9F9EF", "stage_mut": "#CFCFC4", "stage_line": "rgba(249,249,239,.18)", "thumb": "#FEBE10"
+  }
+}

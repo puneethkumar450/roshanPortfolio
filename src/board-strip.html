@@ -1,0 +1,26 @@
+      <div class="board" data-board>
+        <div class="board-bar wrap">
+          <div class="board-bar-l">
+            <h3 id="{{slug}}-board-t" class="h3">Board</h3>
+            <p class="board-count mono" data-count data-total="{{count}}">{{count}} tiles</p>
+          </div>
+          <div class="board-btns needs-js">
+            <button type="button" class="rb" data-step="-1" aria-controls="{{slug}}-strip" aria-label="Previous tiles of the {{name}} board"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M16 9H2.5M8 3.5 2.5 9 8 14.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+            <button type="button" class="rb" data-step="1" aria-controls="{{slug}}-strip" aria-label="Next tiles of the {{name}} board"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 9h13.5M10 3.5 15.5 9 10 14.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+          </div>
+        </div>
+        <div class="strip">
+          <div class="strip-scroller" id="{{slug}}-strip" role="region" aria-label="{{name}} board, {{count}} tiles" aria-describedby="{{slug}}-board-cap" data-name="{{name}}"{{!start_attr}}>
+            <div class="strip-track">
+{{!tiles}}
+            </div>
+          </div>
+        </div>
+        <div class="ruler wrap" aria-hidden="true">
+          <div class="ruler-in">
+            <div class="ruler-ticks">{{!ticks}}</div>
+            <span class="ruler-thumb"></span>
+          </div>
+        </div>
+        <p class="board-cap wrap mono" id="{{slug}}-board-cap">Fig. — {{board_alt}} {{count}} tiles, {{board_w}} × {{board_h}} px.<span class="needs-js"> Drag, use the arrow keys or the ruler to move; select a tile to enlarge it.</span></p>
+      </div>

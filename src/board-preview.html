@@ -1,0 +1,21 @@
+      <div class="board board--preview">
+        <div class="board-bar wrap">
+          <div class="board-bar-l">
+            <h3 id="{{slug}}-board-t" class="h3">Board</h3>
+            <p class="board-count mono">{{preview_note}}</p>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="sheet-box"{{!box_style}}>
+{{!sheet}}
+          <div class="prep g12">
+            <dl class="prep-list">
+              <div><dt>Status</dt><dd><i class="dot dot--open" aria-hidden="true"></i>Board in preparation</dd></div>
+              <div><dt>Shown</dt><dd>{{shown}}</dd></div>
+              <div><dt>On request</dt><dd>Full board and case study</dd></div>
+            </dl>
+            <a class="btn prep-cta" href="mailto:{{email}}?subject={{subject_q}}">Request the {{name}} case study <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          </div>
+          </div>
+        </div>
+      </div>

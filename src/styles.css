@@ -1,0 +1,769 @@
+/* ==========================================================================
+   Roshan Bharti — portfolio
+   Source: src/styles.css. tools/build_site.py copies it to assets/site.css.
+
+   The idea: Roshan's own identity (warm paper, ink, Signal Blue, Bricolage,
+   the turning head) frames the start and the end of the page. In between,
+   each client project paints its whole section in that brand's palette.
+   Project colours are set per section as custom properties by the build
+   (see src/themes.json); nothing fades at document level.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Bricolage";
+  src: url("fonts/BricolageGrotesque-var.woff2") format("woff2");
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+  color-scheme: light;
+  /* Roshan's frame (light) */
+  --bg: #E9DFCA;          /* warm paper */
+  --fg: #262626;          /* ink */
+  --mut: #5A5346;         /* 5.7:1 on paper */
+  --acc: #0077FF;         /* Signal Blue: large type and graphics only (3.1:1 on paper) */
+  --acc-text: #0058D0;    /* Signal Blue text tint: 4.8:1 on paper */
+  --line: rgba(38, 38, 38, .2);
+
+  --chrome-bg: #E9DFCA;
+  --chrome-fg: #262626;
+  --chrome-line: rgba(38, 38, 38, .2);
+
+  --sans: "Bricolage", "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --deva: "Noto Sans Devanagari", "Kohinoor Devanagari", "Devanagari Sangam MN", "Nirmala UI", sans-serif;
+  --jp: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+
+  --gut: clamp(16px, 3.4vw, 52px);
+  --cg: clamp(12px, 1.6vw, 24px);
+  --top: 84px;                       /* clearance under the floating header */
+  --ease: cubic-bezier(.2, .7, .1, 1);
+
+  /* Board strip height: viewport-aware, but always a whole multiple of 3 px so that
+     every 2400 x 1440 tile is a whole number of pixels wide and the seams vanish. */
+  --strip-h: 480px;
+}
+@supports (width: round(down, 10px, 1px)) {
+  :root { --gut: round(down, clamp(16px, 3.4vw, 52px), 1px); }
+}
+@media (max-width: 699px) {
+  :root { --strip-h: 288px; --top: 76px; }
+}
+/* tools/build_site.py reads the two rules marked "strip:" to write each tile's `sizes`, so
+   the images it asks for always match the strip's real height. Keep the markers. */
+@supports (height: round(down, 10px, 3px)) {
+  :root { --strip-h: round(down, clamp(288px, 56vh, 600px), 3px); } /* strip: desktop */
+  @media (max-width: 699px) and (orientation: portrait) {
+    :root { --strip-h: round(down, clamp(288px, 44vh, 420px), 3px); } /* strip: phone */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #1E1E1F;
+    --fg: #EDE3CF;
+    --mut: #B0A794;
+    --acc: #3D95FF;
+    --acc-text: #3D95FF;
+    --line: rgba(237, 227, 207, .18);
+    --chrome-bg: #2A2A2B;
+    --chrome-fg: #EDE3CF;
+    --chrome-line: rgba(237, 227, 207, .22);
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--bg); }
+/* Smooth scrolling only once the page has settled (main.js adds .ready after load), so a
+   deep link (index.html#netpure, the 404 page's links) lands at once instead of gliding past,
+   and loading, every board on the way. */
+@media (prefers-reduced-motion: no-preference) {
+  html.ready:not(.still) { scroll-behavior: smooth; }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* Only the parts that bleed to the page edge are clipped; anything else that grows wider
+   (user text-spacing, zoom) scrolls instead of being cut off. */
+.hero, .proj { overflow-x: clip; }
+img { display: block; max-width: 100%; height: auto; }
+h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+h1, h2, h3 { font-weight: inherit; font-size: inherit; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+em { font-style: normal; }
+p { text-wrap: pretty; }
+::selection { background: var(--fg); color: var(--bg); }
+[lang="hi"] { font-family: var(--deva); }
+[lang="ja"] { font-family: var(--jp); }
+html:not(.js) .needs-js { display: none !important; }
+
+/* Focus: a ring in the text colour of whatever surface it sits on, so it always
+   clears 3:1 against the ground (every text colour clears 4.5:1). Controls that can
+   invert (solid buttons, the pressed motion toggle, any button on hover) draw their
+   ring OUTSIDE themselves, on the surface, so they take the surface's ink, not currentColor. */
+:focus { outline: none; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 3px; }
+.btn:focus-visible, .rb:focus-visible, .motion-btn:focus-visible { outline-color: var(--fg); }
+
+/* Hash jumps and focus scrolling stop clear of the floating header pills. Sections that
+   already carry the header clearance in their own top padding cancel it and land at y=0. */
+html { scroll-padding-top: calc(var(--top) + 8px); }
+#work, .proj, #about, #contact { scroll-margin-top: calc(-1 * (var(--top) + 8px)); }
+
+.sr-only {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.wrap { padding-inline: var(--gut); }
+.g12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--cg); }
+.mono { font-family: var(--mono); font-size: 13px; line-height: 1.45; font-weight: 400; letter-spacing: 0; }
+.mut { color: var(--mut); }
+
+/* Drawn from the frame tokens (an ink pill on paper, a cream pill in dark mode), with a
+   paper halo inside the ring so it reads over whichever section it lands on. */
+.skip {
+  position: fixed; left: 12px; top: -80px; z-index: 100;
+  background: var(--fg); color: var(--bg); padding: 12px 16px; border-radius: 10px;
+  text-decoration: none; font-weight: 600;
+}
+.skip:focus-visible { top: 12px; outline-color: var(--fg); box-shadow: 0 0 0 3px var(--bg); }
+
+/* Pause motion: freezes every looping mark and every transition */
+html.still *, html.still *::before, html.still *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+
+/* ---------- Buttons and small parts ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px;
+  border-radius: 999px; border: 1px solid currentColor; background: transparent;
+  text-decoration: none; font-weight: 600; font-size: 16px; line-height: 1.2; cursor: pointer;
+  transition: background-color .2s, color .2s;
+}
+.btn:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn svg { width: 14px; height: 14px; flex: none; }
+.btn--solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn--solid:hover { background: transparent; color: var(--fg); }
+
+.rb {
+  width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1px solid currentColor; background: transparent;
+  display: grid; place-items: center; cursor: pointer; transition: background-color .2s, color .2s, opacity .2s;
+}
+.rb:hover:not([aria-disabled="true"]) { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+/* aria-disabled, not disabled: the button keeps focus when it reaches the end of a board */
+.rb[aria-disabled="true"] { cursor: default; border-color: color-mix(in srgb, currentColor 38%, transparent); }
+.rb[aria-disabled="true"] svg { opacity: .38; } /* dim the control, never its focus ring */
+.rb svg { width: 18px; height: 18px; }
+
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; }
+.dot--open { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+
+.motion-btn {
+  display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px 0 13px;
+  border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer;
+  font-family: var(--mono); font-size: 13px; line-height: 1; white-space: nowrap;
+}
+.motion-btn:hover { border-color: currentColor; }
+.motion-ico { position: relative; width: 12px; height: 12px; flex: none; }
+.motion-ico::before, .motion-ico::after {
+  content: ""; position: absolute; top: 1px; bottom: 1px; width: 3px; background: currentColor; border-radius: 1px;
+}
+.motion-ico::before { left: 2px; }
+.motion-ico::after { right: 2px; }
+.motion-btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.motion-btn[aria-pressed="true"] .motion-ico::before { left: 2px; top: 0; bottom: 0; width: 0; height: 0; background: none;
+  border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; border-radius: 0; }
+.motion-btn[aria-pressed="true"] .motion-ico::after { display: none; }
+
+/* ---------- Header: Roshan's label stays put while the brands take over ---------- */
+/* The pills wrap rather than run off-screen: with user text spacing (WCAG 1.4.12) or large
+   text the nav drops to a second row, still on the right, instead of losing Résumé. The auto
+   margins keep the now-showing pill centred between the other two on one row. */
+.chrome {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 8px;
+  padding: max(12px, env(safe-area-inset-top)) var(--gut) 0;
+  pointer-events: none;
+}
+.chrome > * { pointer-events: auto; }
+.chrome > .brand, .chrome > .now { margin-right: auto; }
+.pill {
+  flex: none; display: inline-flex; align-items: center; height: 44px; padding: 0 4px; border-radius: 999px;
+  background: var(--chrome-bg); color: var(--chrome-fg); box-shadow: 0 0 0 1px var(--chrome-line);
+  font-size: 14px; font-weight: 500; line-height: 1;
+}
+.pill a { position: relative; display: inline-flex; align-items: center; justify-content: center; height: 44px; min-width: 44px;
+  padding: 0 .86em; text-decoration: none; border-radius: 999px; z-index: 0; }
+.pill a::before { content: ""; position: absolute; inset: 5px 0; border-radius: 999px; background: transparent; z-index: -1; transition: background-color .2s; }
+.pill a[aria-current="true"]::before { background: color-mix(in srgb, var(--chrome-fg) 10%, transparent); }
+.pill a:hover::before { background: var(--chrome-fg); }
+.pill a:hover { color: var(--chrome-bg); }
+.pill a:focus-visible { outline-offset: -4px; border-radius: 999px; }
+.nav-cv svg { width: 11px; height: 11px; margin-left: 5px; }
+
+.brand { gap: 10px; padding: 0 16px 0 6px; text-decoration: none; }
+.brand:focus-visible { outline-offset: -4px; border-radius: 999px; }
+.brand-mark { width: 32px; height: 32px; flex: none; }
+.brand-mark img { width: 32px; height: 32px; }
+
+.now { gap: 12px; padding: 0 16px; font-family: var(--mono); font-size: 13px; }
+.seq { display: flex; align-items: center; gap: 6px; }
+.seq i {
+  --ring: inset 0 0 0 1px color-mix(in srgb, var(--chrome-fg) 28%, transparent);
+  display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: var(--ring);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), margin .4s var(--ease);
+}
+.seq i.on { transform: scale(1.5); margin-inline: 3px; box-shadow: var(--ring), 0 0 0 1.5px var(--chrome-bg), 0 0 0 2.5px var(--chrome-fg); }
+/* Dots too close to the pill's own colour get a firmer ring so all five always read.
+   The build measures each dot against both pills: lo-l on the light pill, lo-d on the dark one. */
+.seq i.lo-l { --ring: inset 0 0 0 1.5px color-mix(in srgb, var(--chrome-fg) 55%, transparent); }
+@media (prefers-color-scheme: dark) {
+  .seq i.lo-l { --ring: inset 0 0 0 1px color-mix(in srgb, var(--chrome-fg) 28%, transparent); }
+  .seq i.lo-d { --ring: inset 0 0 0 1.5px color-mix(in srgb, var(--chrome-fg) 62%, transparent); }
+}
+.now-label { min-width: 15ch; white-space: nowrap; }
+
+@media (max-width: 899px) {
+  .now-label { display: none; }
+  .now { padding: 0 13px; }
+}
+@media (max-width: 599px) {
+  .chrome { gap: 6px; }
+  .brand-name { display: none; }
+  .brand { padding: 0 6px; width: 44px; justify-content: center; }
+  .pill { font-size: 13px; padding: 0 3px; }
+  .pill a { padding: 0 5px; }
+  .nav-cv svg { display: none; }
+  .now { padding: 0 9px; }
+  .seq { gap: 4px; }
+  .seq i { width: 7px; height: 7px; }
+}
+@media (max-width: 374px) {
+  /* Too narrow for a row of five beside the nav: the cue stands up as a column, like a small scroll gauge. */
+  .chrome { gap: 4px; }
+  .now { padding: 0 7px; }
+  .seq { flex-direction: column; gap: 2px; }
+  .seq i { width: 5px; height: 5px; }
+  .seq i.on { transform: scale(1.4); margin-inline: 0; margin-block: 1px; }
+  .pill a { padding: 0 4px; }
+}
+
+/* ---------- Hero ---------- */
+.hero { padding-top: calc(var(--top) + 12px); padding-bottom: 8px; container-type: inline-size; }
+.hero-top { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
+.hero-top .motion-btn { flex: none; }
+.hello { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 500; margin-right: auto; }
+.hello-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--acc); flex: none; }
+.hero-role { color: var(--mut); }
+.hero-mid { align-items: end; padding-block: clamp(24px, 3.6vh, 48px) clamp(24px, 3.4vh, 40px); }
+.hero-tag {
+  grid-column: 1 / 8; font-size: clamp(34px, 4.4vw, 68px); line-height: 1.04; letter-spacing: -.022em;
+  font-weight: 500; text-wrap: balance;
+}
+.hero-tag em { color: var(--acc); }
+.hero-lead { grid-column: 9 / 13; display: grid; gap: 12px; font-size: 16px; line-height: 1.6; }
+.hero-lead p:first-child { font-size: 18px; font-weight: 500; line-height: 1.45; }
+.hero-lead p + p { color: var(--mut); }
+
+/* The wordmark: "Roshan [turning head] Bharti", fitted to the measure in pure CSS.
+   --wm-k is the line's width in em (measured once for these settings); 100cqi is the
+   hero's content width, so the line fills it exactly with no script and no reflow. */
+.wordmark { --wm-k: 5.30; font-size: calc((100vw - 2 * var(--gut)) / var(--wm-k)); }
+@supports (width: 1cqi) { .wordmark { font-size: calc(100cqi / var(--wm-k)); } }
+/* --wm-fit (main.js) is 1 unless the reader's own text spacing makes the line wider than the
+   measure; then the wordmark scales down to fit instead of running off the page. */
+.wm {
+  display: flex; align-items: center; white-space: nowrap; font-size: calc(var(--wm-fit, 1) * 1em);
+  font-weight: 800; font-stretch: 78%; letter-spacing: -.012em; line-height: .8;
+}
+.wm-w { display: block; padding-bottom: .05em; }
+.wm-w:first-child { margin-left: -.04em; }
+.wm-mark { flex: none; width: .78em; margin-inline: .03em .045em; transform: translateY(-.025em); }
+.wm-mark img { width: 100%; height: auto; }
+
+/* Content-sized columns spread edge to edge: each claim stays on one line wherever the row
+   is wide enough, and wraps evenly (never a lone last word) where it isn't. */
+.hero-proof {
+  display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between;
+  column-gap: clamp(24px, 3vw, 48px); row-gap: 8px;
+  margin-top: clamp(18px, 2.6vh, 32px); padding-top: 14px; border-top: 1px solid var(--line); color: var(--mut);
+}
+.hero-proof li { text-wrap: balance; }
+.hero-proof li:last-child { text-align: right; }
+.hero-proof a { color: var(--fg); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-block: -12px; }
+.hero-proof a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.hero-proof svg { width: 12px; height: 12px; }
+
+/* ---------- Work index ---------- */
+/* #work lands at y=0 like the project sections (its scroll-margin cancels html's scroll-padding),
+   so the index carries its own clearance and the hero's proof row scrolls fully off the top. */
+.index { padding-block: calc(var(--top) - 16px) 24px; }
+.index-head { align-items: end; margin-bottom: clamp(20px, 3vh, 32px); }
+.index-title {
+  grid-column: 1 / 9; font-size: clamp(46px, 6.6vw, 104px); line-height: .92; letter-spacing: -.012em;
+  font-weight: 700; font-stretch: 86%;
+}
+.index-title span { color: var(--mut); font-weight: 500; white-space: nowrap; }
+.index-title .en { margin-inline: .04em; }
+.index-sum { grid-column: 9 / 13; justify-self: end; color: var(--mut); padding-bottom: .4em; }
+.idx { border-bottom: 1px solid var(--line); }
+.idx a {
+  position: relative; isolation: isolate; display: grid; align-items: center; column-gap: var(--cg);
+  --thumb-w: clamp(148px, 14vw, 280px);
+  grid-template-columns: 52px minmax(0, 1.25fr) minmax(0, 1fr) 112px 190px var(--thumb-w);
+  padding: 12px var(--gut); border-top: 1px solid var(--line); text-decoration: none;
+  transition: color .3s var(--ease);
+}
+.idx a::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--rbg);
+  transform: scaleY(0); transform-origin: 50% 100%; transition: transform .45s var(--ease);
+}
+.idx a:hover::before, .idx a:focus-visible::before { transform: scaleY(1); }
+.idx a:hover, .idx a:focus-visible, .idx a:hover .mut, .idx a:focus-visible .mut { color: var(--rfg); }
+.idx a:focus-visible { outline: 2px solid var(--rfg); outline-offset: -5px; border-radius: 0; }
+.idx-no { font-family: var(--mono); font-size: 13px; }
+.idx-name { font-size: clamp(34px, 4.4vw, 72px); line-height: 1; letter-spacing: -.022em; font-weight: 700; font-stretch: 86%; }
+.idx-meta { display: grid; gap: 2px; font-size: 15px; line-height: 1.4; }
+.idx-meta b { font-weight: 600; }
+.idx-sw { display: flex; padding-left: 4px; }
+.idx-sw i {
+  display: block; width: 18px; height: 18px; border-radius: 50%; margin-left: -4px;
+  box-shadow: 0 0 0 1.5px var(--bg), inset 0 0 0 1px color-mix(in srgb, currentColor 40%, transparent);
+}
+.idx a:hover .idx-sw i, .idx a:focus-visible .idx-sw i { box-shadow: 0 0 0 1.5px var(--rbg), inset 0 0 0 1px color-mix(in srgb, var(--rfg) 45%, transparent); }
+.idx-status { display: inline-flex; align-items: flex-start; gap: 9px; font-family: var(--mono); font-size: 13px; line-height: 1.35; text-wrap: balance; }
+/* A status dot sits on the first line when its label runs to two. */
+.idx-status > .dot, .op-st > .dot { margin-top: calc((1.4em - 9px) / 2); margin-top: calc((1lh - 9px) / 2); }
+.nw { white-space: nowrap; }
+.idx-cover { width: var(--thumb-w); aspect-ratio: 2961 / 2171; overflow: hidden; border-radius: 3px; }
+.idx-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.idx a:hover .idx-cover img { transform: scale(1.05); }
+
+/* ---------- Project sections (one template for all five) ---------- */
+.proj { background: var(--bg); color: var(--fg); padding-top: calc(var(--top) - 12px); } /* meta rule sits just under the pills */
+.proj ::selection { background: var(--fg); color: var(--bg); }
+
+.op-meta {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--cg); row-gap: 4px; align-items: start;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.op-meta > span:nth-child(1) { grid-column: 1 / 3; }
+.op-meta > span:nth-child(2) { grid-column: 3 / 6; }
+.op-meta > span:nth-child(3) { grid-column: 6 / 10; }
+.op-meta > span:nth-child(4) { grid-column: 10 / 13; justify-self: end; display: inline-flex; align-items: flex-start; gap: 9px; text-align: right; }
+.op-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--cg); align-items: end; margin-top: clamp(16px, 2.4vh, 26px); }
+/* The project name is set in Roshan's ink, never in the client's logo colour. */
+.op-title {
+  grid-column: 1 / 8; color: var(--fg);
+  font-size: clamp(44px, 6.5vw, 104px); line-height: .95; letter-spacing: -.02em; font-weight: 700; font-stretch: 88%;
+  margin-left: -.03em; text-wrap: balance;
+}
+/* The headline stands on the column it introduces: the text column (9, also the hero lead's)
+   in left-cover sections, the cover's left edge (5) in right-cover ones. */
+.op-headline {
+  grid-column: 9 / 13; font-size: clamp(22px, 1.9vw, 30px); line-height: 1.16; letter-spacing: -.012em;
+  font-weight: 600; text-wrap: balance; padding-bottom: .2em;
+}
+.proj--r .op-title { grid-column: 1 / 5; }
+.proj--r .op-headline { grid-column: 5 / 10; }
+
+/* Cover bleeds off the page edge (alternating sides), the palette sits under it,
+   the text runs beside both. DOM order is cover, text, palette, so it reads in that order. */
+.pj { margin-top: clamp(24px, 4vh, 40px); align-items: start; grid-template-rows: auto 1fr; }
+.pj-cover { grid-column: 1 / 9; grid-row: 1; margin-left: calc(-1 * var(--gut)); }
+.pj > .pal { grid-column: 1 / 9; grid-row: 2; }
+.pj-text { grid-column: 9 / 13; grid-row: 1 / 3; display: grid; gap: 26px; padding-bottom: 8px; }
+.proj--r .pj-cover { grid-column: 5 / 13; margin: 0 calc(-1 * var(--gut)) 0 0; }
+.proj--r .pj > .pal { grid-column: 5 / 13; }
+.proj--r .pj-text { grid-column: 1 / 5; }
+.pj-cover img { width: 100%; box-shadow: 0 0 0 1px var(--line); }
+
+.h3 { font-family: var(--mono); font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0; }
+.pj-sec { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 10px; }
+.pj-sec > p { max-width: 46ch; }
+.idea blockquote p {
+  font-size: clamp(24px, 2vw, 30px); line-height: 1.14; letter-spacing: -.014em; font-weight: 600; text-wrap: balance;
+}
+.idea .s { display: inline-block; max-width: 100%; }
+/* Two columns only where each item fits on a line or two; a narrow text column gets one. */
+.deliv { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(14em, 100%), 1fr)); column-gap: var(--cg); row-gap: 4px; font-size: 15px; line-height: 1.4; }
+.deliv li { padding-left: 14px; position: relative; text-wrap: balance; }
+.deliv li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 1px; background: currentColor; }
+
+/* Palette: a printer's colour bar under each cover */
+.pal { padding: 16px 0 0; display: grid; gap: 12px; }
+.pal-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.pal-head p { color: var(--mut); }
+.pal-bar { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.chip {
+  position: relative; appearance: none; display: grid; gap: 8px; align-content: start; width: 100%; padding: 0 10px 0 0; margin: 0;
+  border: 0; background: none; text-align: left; cursor: copy; font-family: var(--mono); font-size: 13px; line-height: 1.35;
+}
+.chip-c { display: block; height: 44px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 42%, transparent); transition: transform .3s var(--ease); transform-origin: 50% 100%; }
+.pal-bar li:first-child .chip-c { border-radius: 3px 0 0 3px; }
+.pal-bar li:last-child .chip-c { border-radius: 0 3px 3px 0; }
+.chip:hover .chip-c { transform: scaleY(1.12); }
+.chip-n { display: block; font-family: var(--sans); font-size: 15px; font-weight: 600; line-height: 1.25; }
+.chip-v { display: block; white-space: nowrap; }
+/* The ring is drawn inside the chip's own column (its right padding), never over the next chip. */
+.chip:focus-visible { outline: none; }
+.chip:focus-visible::after { content: ""; position: absolute; inset: -5px 3px -5px -5px; border: 2px solid currentColor; border-radius: 4px; pointer-events: none; }
+
+/* ---------- Board: one shared component, on a dark stage band ---------- */
+.board {
+  --fg: var(--st-fg); --mut: var(--st-mut); --line: var(--st-line); --bg: var(--st-bg);
+  background: var(--st-bg); color: var(--st-fg);
+  scroll-margin-top: 40px;
+  margin-top: clamp(36px, 6vh, 60px); padding-block: clamp(24px, 3.6vh, 36px) clamp(22px, 3.2vh, 32px);
+}
+.board-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.board-bar-l { display: flex; align-items: baseline; gap: 6px 18px; flex-wrap: wrap; }
+.board-bar .h3 { font-family: var(--sans); font-size: clamp(22px, 1.8vw, 26px); font-weight: 600; letter-spacing: -.01em; line-height: 1.1; }
+.board-count { font-variant-numeric: tabular-nums; color: var(--mut); }
+.board-btns { display: flex; gap: 8px; }
+
+.strip { position: relative; }
+.strip::after { /* focus ring for the scroller, drawn above the composited tiles and never clipped */
+  content: ""; position: absolute; inset: -3px 3px; border-radius: 4px; pointer-events: none; z-index: 2;
+  box-shadow: 0 0 0 2px var(--st-fg), 0 0 0 4px var(--st-bg); opacity: 0;
+}
+.strip:has(.strip-scroller:focus-visible)::after { opacity: 1; }
+.strip-scroller {
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  padding: 1px var(--gut); scroll-padding-inline: var(--gut); cursor: grab; -webkit-user-select: none; user-select: none;
+}
+.strip-scroller:focus-visible { outline: none; }
+.strip-scroller::-webkit-scrollbar { display: none; }
+.strip-scroller.dragging { cursor: grabbing; }
+.strip-scroller.dragging .tile { pointer-events: none; }
+.strip-track { display: flex; width: max-content; box-shadow: 0 0 0 1px var(--st-line); }
+.tile {
+  position: relative; display: block; flex: none; height: var(--strip-h);
+  width: calc(var(--strip-h) * var(--w) / 1440); background: color-mix(in srgb, var(--st-fg) 7%, transparent);
+  cursor: zoom-in;
+}
+.strip-scroller.dragging .tile { cursor: inherit; }
+.tile img { width: 100%; height: 100%; max-width: none; -webkit-user-drag: none; user-select: none; }
+/* Each tile overlaps the next by one CSS pixel, so at fractional pixel ratios (1.25x, 1.5x,
+   2.625x) a join blends image over image, never over the stage: no hairline seams. */
+.tile:not(:last-child) { margin-right: -1px; }
+.tile:focus-visible { outline: none; }
+.tile:focus-visible::after {
+  content: ""; position: absolute; inset: 4px; border-radius: 3px; pointer-events: none;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #111111, inset 0 0 0 2px #111111;
+}
+
+.ruler { margin-top: 12px; }
+.ruler-in { position: relative; height: 30px; cursor: pointer; }
+.ruler-in::before { content: ""; position: absolute; inset: -12px 0 -14px; } /* 44 px+ tall target at every size */
+.ruler-ticks { display: flex; height: 100%; border-top: 1px solid color-mix(in srgb, var(--st-fg) 55%, transparent); }
+.ruler-ticks span { position: relative; flex-basis: 0; border-left: 1px solid color-mix(in srgb, var(--st-fg) 55%, transparent); height: 10px; }
+.ruler-ticks span:last-child { border-right: 1px solid color-mix(in srgb, var(--st-fg) 55%, transparent); }
+.ruler-ticks b { position: absolute; left: 6px; top: 11px; font-family: var(--mono); font-size: 12px; line-height: 1; font-weight: 400; color: var(--st-mut); }
+.ruler-thumb { position: absolute; left: 0; top: -2px; height: 5px; width: 8%; background: var(--thumb); border-radius: 1px; pointer-events: none; will-change: transform; }
+html:not(.js) .ruler-thumb { display: none; }
+.board-cap { margin-top: 10px; color: var(--mut); max-width: 110ch; }
+
+/* Board in preparation (manifest board: null) */
+.sheet-rows { display: grid; gap: 6px; }
+/* Each row is a window onto the low-res overview: the image is two (or, on phones, four) rows
+   wide and shifted one row's width per row. Its own width/height give the row its height. */
+.sheet-row { display: block; overflow: hidden; border-radius: 2px; box-shadow: 0 0 0 1px var(--st-line); line-height: 0; }
+.sheet-row img { width: 200%; max-width: none; height: auto; }
+.sheet-row:nth-child(2) img { margin-left: -100%; }
+.sheet-row:nth-child(n+3) { display: none; }
+.prep { margin-top: clamp(22px, 3vh, 32px); align-items: start; row-gap: 20px; }
+.prep-list { grid-column: 1 / 8; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 24px; }
+.prep-list > div { display: contents; }
+.prep-list dt, .prep-list dd { padding: 11px 0; border-top: 1px solid var(--line); }
+.prep-list dt { font-family: var(--mono); font-size: 13px; color: var(--mut); padding-top: 13px; }
+.prep-list dd { display: flex; align-items: center; gap: 10px; font-size: 16px; }
+.prep-list .dot { color: var(--thumb); }
+/* The overview and its status list share one box as wide as the overview, so the request
+   button ends on the overview's right edge at every width. */
+.sheet-box { display: grid; }
+.prep-cta { grid-column: 9 / 13; justify-self: start; align-self: end; }
+@media (min-width: 700px) { .prep-cta { white-space: nowrap; } }
+@media (min-width: 1024px) { .prep-cta { justify-self: end; } }
+@media (min-width: 1024px) and (max-width: 1239px) { .prep-cta { grid-column: 8 / 13; } }
+
+/* ---------- Tile viewer ---------- */
+.viewer {
+  width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: #0E0E0E; color: #F4F1EA; overscroll-behavior: contain;
+}
+.viewer[open] { display: grid; grid-template: auto minmax(0, 1fr) / minmax(0, 1fr); }
+.viewer::backdrop { background: rgba(14, 14, 14, .6); }
+.viewer-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px var(--gut); --fg: #F4F1EA; --bg: #0E0E0E; }
+.viewer-t { font-family: var(--mono); font-size: 13px; }
+.viewer-btns { display: flex; gap: 8px; }
+.viewer-fig {
+  display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center;
+  padding: 0 var(--gut) var(--gut); min-height: 0;
+}
+.viewer-fig img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+/* When the figure pans (main.js makes it a named, focusable group), its ring is drawn inside. */
+.viewer-fig:focus-visible { outline-color: #F4F1EA; outline-offset: -3px; border-radius: 0; }
+/* Small screens: fitting the tile to the box would leave its text unreadable, so the tile is
+   shown tall and the figure pans. Portrait phones pan sideways at full height; short
+   (landscape) screens show it at least 720 px tall and pan both ways. */
+@media (max-width: 699px) and (orientation: portrait), (max-height: 520px) {
+  .viewer-fig {
+    display: block; place-items: start; overflow: auto hidden; white-space: nowrap;
+    overscroll-behavior: contain; touch-action: pan-x pan-y pinch-zoom; scrollbar-width: thin;
+  }
+  .viewer-fig img { height: 100%; width: auto; max-width: none; max-height: none; }
+}
+@media (max-height: 520px) {
+  .viewer-bar { padding-block: 6px; }
+  .viewer-fig { overflow: auto; padding-bottom: 8px; }
+  .viewer-fig img { height: max(100%, 720px); }
+}
+
+/* ---------- Copy toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 60;
+  transform: translate(-50%, 12px); opacity: 0; visibility: hidden; pointer-events: none;
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 999px;
+  background: #262626; color: #F4EEE2; font-family: var(--mono); font-size: 13px; line-height: 1;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, .25); transition: opacity .25s, transform .25s, visibility 0s .25s;
+}
+.toast i { width: 14px; height: 14px; border-radius: 50%; background: var(--c, #0077FF); box-shadow: 0 0 0 1px rgba(255, 255, 255, .35); }
+.toast.on { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .25s, transform .25s, visibility 0s; }
+
+/* ---------- About ---------- */
+.about { padding-block: calc(var(--top) + 16px) 28px; }
+.kicker { font-family: var(--mono); font-size: 13px; line-height: 1.4; font-weight: 400; }
+.about-head { align-items: start; }
+.about-head .kicker { grid-column: 1 / 3; padding-top: .6em; }
+.about-statement {
+  grid-column: 3 / 13; font-size: clamp(38px, 5.2vw, 88px); line-height: .98; letter-spacing: -.024em;
+  font-weight: 600; font-stretch: 88%; text-wrap: balance;
+}
+.about-statement em { color: var(--acc); }
+.about-body { margin-top: clamp(36px, 6vh, 64px); align-items: start; row-gap: 40px; }
+.about-side { grid-column: 1 / 5; display: grid; gap: 28px; position: sticky; top: var(--top); }
+/* One figure plate: the still and the turnaround share a frame, the box's bottom rule divides them. */
+.markfig { display: grid; max-width: 340px; }
+.markfig-box { position: relative; border: 1px solid var(--line); aspect-ratio: 1; display: grid; place-items: center; }
+.markfig-box img { width: 66%; }
+.markfig-turn { width: 100%; border: 1px solid var(--line); border-top: 0; padding: 10px 8px; }
+.markfig figcaption { color: var(--mut); margin-top: 10px; text-wrap: balance; }
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 18px; font-size: 15px; line-height: 1.4; }
+.facts dt { font-family: var(--mono); font-size: 13px; color: var(--mut); padding-top: 1px; }
+.about-copy { grid-column: 6 / 13; display: grid; gap: 18px; font-size: clamp(17px, 1.25vw, 19px); }
+.about-copy p:first-child { font-size: clamp(22px, 1.9vw, 28px); line-height: 1.3; letter-spacing: -.012em; font-weight: 500; }
+.about-copy p + p { color: var(--mut); max-width: 60ch; }
+.block { margin-top: clamp(48px, 7vh, 76px); }
+.block-h { font-size: clamp(26px, 2.4vw, 36px); letter-spacing: -.02em; font-weight: 600; line-height: 1; border-top: 1px solid var(--fg); padding-top: 14px; margin-bottom: 6px; }
+.xp li { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--cg); padding: 16px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.xp .when { grid-column: 1 / 3; font-family: var(--mono); font-size: 13px; color: var(--mut); }
+.xp .role { grid-column: 3 / 7; font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -.008em; }
+.xp .org { display: block; font-weight: 400; font-size: 15px; color: var(--mut); letter-spacing: 0; margin-top: 3px; }
+.xp .note { grid-column: 7 / 13; color: var(--mut); font-size: 16px; }
+.tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--cg); }
+.tools > div { padding: 16px 0; display: grid; gap: 8px; align-content: start; }
+.tools dt { font-family: var(--mono); font-size: 13px; color: var(--mut); }
+.tools dd { font-size: 18px; line-height: 1.4; font-weight: 500; letter-spacing: -.008em; }
+.about-cta { margin-top: clamp(44px, 7vh, 72px); display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- Contact: Signal Blue sign-off (deep tint so every size passes AA) ---------- */
+.contact {
+  --bg: #0058D0; --fg: #FFFFFF; --mut: #FFFFFF; --acc: #FFFFFF; --line: rgba(255, 255, 255, .42);
+  background: var(--bg); color: var(--fg);
+  padding-block: calc(var(--top) - 4px) clamp(44px, 7vh, 72px); position: relative;
+  /* Contact and the footer together fill at least one screen, so #contact lands at the top and
+     nothing from About can sit under the header pills. The footer is 80 px tall on one row.
+     Any height to spare is split above and below the statement, so it stays centred. */
+  display: flex; flex-direction: column; min-height: calc(100vh - 80px); min-height: calc(100svh - 80px);
+}
+.contact-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: clamp(24px, 4vh, 48px); }
+/* The mark hangs in the top-right corner, clear of the header pills, without taking height
+   from the column: the statement centres between the kicker and the sign-off. */
+.contact-mark { position: absolute; top: calc(var(--top) - 12px); right: var(--gut); width: clamp(84px, 11vw, 176px); filter: brightness(0) invert(1); }
+.contact-mark img { width: 100%; }
+.contact-statement {
+  margin-block: auto; max-width: 7.6em;
+  font-size: clamp(56px, 9.4vw, 168px); line-height: .9; letter-spacing: -.008em; font-weight: 760; font-stretch: 86%; text-wrap: balance;
+}
+.contact-body { align-items: end; padding-top: clamp(36px, 6vh, 72px); row-gap: 36px; }
+.contact-copy { grid-column: 1 / 7; font-size: clamp(20px, 1.8vw, 26px); line-height: 1.32; font-weight: 500; letter-spacing: -.006em; max-width: 30em; }
+.contact-links { grid-column: 8 / 13; display: grid; gap: 14px; justify-items: start; }
+.talk { font-size: clamp(24px, 2vw, 30px); font-weight: 700; letter-spacing: -.012em; line-height: 1.1; }
+.mail {
+  display: inline-block; font-size: clamp(26px, 2.7vw, 42px); font-weight: 700; letter-spacing: -.02em; line-height: 1.2; text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 3px no-repeat; padding: 6px 0 7px;
+  overflow-wrap: anywhere; transition: background-size .35s var(--ease);
+}
+.mail:hover { background-size: 0 3px; background-position: 100% 100%; }
+.contact-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.contact .btn { font-size: 17px; }
+.contact .btn:hover { background: #FFFFFF; color: #0058D0; border-color: #FFFFFF; }
+
+.foot { background: #262626; color: #E9DFCA; --fg: #E9DFCA; --bg: #262626; --line: rgba(233, 223, 202, .3); }
+.foot-in { display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; padding-block: 18px calc(18px + env(safe-area-inset-bottom)); }
+.colophon { color: #E9DFCA; }
+.foot-act { display: flex; align-items: center; gap: 8px 20px; flex-wrap: wrap; }
+.foot a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-family: var(--mono); font-size: 13px; }
+.foot a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- Not found ---------- */
+/* The not-found page and its footer fill exactly one screen. */
+.nf-page { display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; }
+.nf { flex: 1 0 auto; display: grid; align-content: center; gap: 28px; padding-block: calc(var(--top) + 24px) 64px; }
+.nf-code { font-family: var(--mono); font-size: 13px; color: var(--mut); }
+.nf-title { font-size: clamp(56px, 10vw, 168px); line-height: .9; letter-spacing: -.022em; font-weight: 800; font-stretch: 80%; display: flex; align-items: center; gap: .12em; flex-wrap: wrap; }
+.nf-title .nf-img { width: .8em; aspect-ratio: 1; flex: none; }
+.nf-copy { font-size: clamp(20px, 1.8vw, 26px); max-width: 30em; }
+
+/* ---------- Forced colours (Windows High Contrast) ----------
+   Box-shadow rings vanish here, so the strip and tile rings become system-colour outlines;
+   the palette and the colour cues keep their real colours (they are the content). */
+@media (forced-colors: active) {
+  .strip:has(.strip-scroller:focus-visible)::after { outline: 2px solid Highlight; outline-offset: 0; }
+  .tile:focus-visible::after { outline: 3px solid Highlight; outline-offset: 0; }
+  .chip-c, .idx-sw i, .seq i, .toast i, .hello-dot { forced-color-adjust: none; }
+  .dot { forced-color-adjust: none; background: CanvasText; }
+  .dot--open { background: transparent; box-shadow: inset 0 0 0 1.5px CanvasText; }
+  .pill { outline: 1px solid CanvasText; outline-offset: -1px; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1239px) {
+  /* The swatches and the status share one column, stacked. */
+  .idx a { --thumb-w: 132px; grid-template-columns: 44px minmax(0, 1fr) minmax(0, 260px) 190px var(--thumb-w);
+    grid-template-areas: "no name meta sw cover" "no name meta status cover"; row-gap: 8px; }
+  .idx-no { grid-area: no; }
+  .idx-name { grid-area: name; }
+  .idx-meta { grid-area: meta; }
+  .idx-sw { grid-area: sw; align-self: end; }
+  .idx-status { grid-area: status; align-self: start; }
+  .idx-cover { grid-area: cover; }
+}
+@media (max-width: 1023px) {
+  .hero-top { gap: 8px 12px; }
+  .hero-role { order: 3; flex-basis: 100%; }
+  .index-title, .index-sum { grid-column: 1 / -1; justify-self: start; }
+  .index-sum { margin-top: 10px; }
+  .hero-tag { grid-column: 1 / -1; }
+  .hero-lead { grid-column: 1 / -1; margin-top: 24px; max-width: 46ch; }
+  .op-title, .proj--r .op-title { grid-column: 1 / -1; }
+  .op-headline, .proj--r .op-headline { grid-column: 1 / -1; margin-top: 10px; max-width: 30em; }
+  .pj { grid-template-rows: none; row-gap: 32px; }
+  .pj-cover, .proj--r .pj-cover { grid-column: 1 / -1; grid-row: auto; margin: 0 calc(-1 * var(--gut)); }
+  .pj > .pal, .proj--r .pj > .pal { grid-column: 1 / -1; grid-row: auto; order: 1; padding-top: 0; margin-top: -16px; }
+  .pj-text, .proj--r .pj-text { grid-column: 1 / -1; grid-row: auto; order: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--cg); }
+  .about-head .kicker, .about-statement { grid-column: 1 / -1; }
+  .about-head .kicker { padding-top: 0; margin-bottom: 16px; }
+  .about-side { grid-column: 1 / -1; position: static; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); align-items: start; column-gap: var(--cg); }
+  .about-copy { grid-column: 1 / -1; }
+  .xp .when { grid-column: 1 / 4; }
+  .xp .role { grid-column: 4 / 13; }
+  .xp .note { grid-column: 4 / 13; margin-top: 6px; }
+  .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-copy, .contact-links { grid-column: 1 / -1; }
+  .prep-list, .prep-cta { grid-column: 1 / -1; }
+}
+@media (max-width: 899px) {
+  .op-meta { grid-template-columns: minmax(0, 1fr) auto; }
+  .op-meta > span:nth-child(1) { grid-column: 1; }
+  .op-meta > span:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+  .op-meta > span:nth-child(3) { grid-column: 1 / -1; grid-row: 3; }
+  .op-meta > span:nth-child(4) { grid-column: 2; grid-row: 1; }
+  /* Tablet portrait: the status stays, under the sector and disciplines. */
+  .idx a { --thumb-w: 120px; grid-template-columns: 36px minmax(0, 1fr) minmax(0, 220px) var(--thumb-w);
+    grid-template-areas: "no name meta cover" "no name status cover"; }
+  .idx-sw { display: none; }
+  .idx-meta { align-self: end; }
+  .idx-status { font-size: 12px; }
+}
+@media (max-width: 699px) {
+  body { font-size: 16px; }
+  .hero { display: flex; flex-direction: column; }
+  .hero-top { order: 1; }
+  .hero-top .motion-btn { min-height: 44px; padding: 0 13px 0 11px; }
+  /* Two lines on phones: each line is fitted on its own so both end on the right margin.
+     --wm-k is the 'mark + Bharti' line, --wm-k1 the 'Roshan' line, both in em. */
+  .wordmark { order: 2; margin-top: 28px; --wm-k: 2.687; --wm-k1: 2.429; }
+  .wm-w:first-child { font-size: calc(var(--wm-fit, 1) * (100vw - 2 * var(--gut)) / var(--wm-k1)); }
+  @supports (width: 1cqi) { .wm-w:first-child { font-size: calc(var(--wm-fit, 1) * 100cqi / var(--wm-k1)); } }
+  .wm { flex-wrap: wrap; row-gap: .02em; }
+  .wm-w:first-child { flex-basis: 100%; }
+  .wm-mark { width: .62em; margin: 0 .05em 0 -.01em; }
+  .hero-mid { order: 3; padding-block: 34px 6px; row-gap: 22px; }
+  .hero-lead { margin-top: 0; }
+  .hero-proof { order: 4; grid-template-columns: 1fr; }
+  .hero-proof li:last-child { text-align: left; margin-top: 6px; }
+
+  .idx a { --thumb-w: 104px; grid-template-columns: 26px minmax(0, 1fr) var(--thumb-w); grid-template-areas: "no name cover" "no meta cover" "no status cover"; row-gap: 4px; padding-block: 14px; align-items: start; }
+  .idx-no { grid-area: no; padding-top: 8px; }
+  .idx-name { grid-area: name; font-size: 32px; }
+  .idx-meta { grid-area: meta; font-size: 14px; }
+  .idx-meta .idx-disc { display: none; }
+  .idx-status { grid-area: status; display: inline-flex; font-size: 12px; }
+  .idx-cover { grid-area: cover; align-self: center; }
+
+  .op-row { margin-top: 14px; }
+  .op-headline { margin-top: 8px; }
+  .pj { margin-top: 22px; row-gap: 24px; }
+  .pj-text, .proj--r .pj-text { grid-template-columns: 1fr; gap: 22px; }
+  .pal-bar { grid-auto-flow: row; grid-auto-columns: auto; border-top: 1px solid var(--line); }
+  .pal-bar li { border-bottom: 1px solid var(--line); }
+  .chip { grid-template-columns: 36px minmax(0, 1fr) auto auto; align-items: center; column-gap: 12px; padding: 7px 0; min-height: 44px; font-size: 12px; }
+  .chip-c { height: 28px; border-radius: 3px !important; }
+  .chip-n { font-size: 14px; }
+  .chip-v + .chip-v { min-width: 13ch; text-align: right; }
+  .chip:hover .chip-c { transform: none; }
+  /* Phone chips have no right padding and nothing beside them: the ring steps outside. */
+  .chip:focus-visible::after { inset: -4px -6px; }
+
+  .board-bar { align-items: flex-end; }
+  .board-cap .needs-js { display: none; }
+  .board-bar-l { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .ruler-ticks b { display: none; }
+  .ruler-in { height: 18px; }
+  .sheet-rows { gap: 4px; }
+  .sheet-row img { width: 400%; }
+  .sheet-row:nth-child(n+3) { display: block; }
+  .sheet-row:nth-child(3) img { margin-left: -200%; }
+  .sheet-row:nth-child(4) img { margin-left: -300%; }
+  .prep-list { column-gap: 16px; }
+  .prep-list dd { font-size: 15px; }
+
+  .about-side { grid-template-columns: 1fr; gap: 24px; }
+  .markfig { max-width: 340px; }
+  .markfig-box { aspect-ratio: 2 / 1; }
+  .markfig-box img { width: 40%; }
+  .xp .when, .xp .role, .xp .note { grid-column: 1 / -1; }
+  .xp .role { margin-top: 6px; }
+  .tools { grid-template-columns: 1fr; }
+  .tools > div { padding: 12px 0; }
+  .tools dd { font-size: 16px; }
+  .contact-top { align-items: center; margin-bottom: 0; }
+  .contact-mark { position: static; width: 72px; flex: none; }
+  .contact-statement { margin-top: 26px; }
+  /* the footer stacks on phones (about 130 px), so Contact needs less height of its own */
+  .contact { min-height: calc(100vh - 128px); min-height: calc(100svh - 128px); }
+  .foot-in { flex-direction: column; align-items: flex-start; }
+  .viewer-bar { flex-wrap: wrap; }
+}

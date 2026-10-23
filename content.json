@@ -1,0 +1,323 @@
+{
+  "site": {
+    "url": "",
+    "title": "Roshan Bharti — Brand Designer",
+    "description": "Roshan Bharti is a brand designer building identity systems, packaging and digital experiences.",
+    "lang": "en",
+    "year": 2026
+  },
+  "person": {
+    "name": "Roshan Bharti",
+    "role": "Brand Designer",
+    "studio": "Moshi Moshi — The Communication Company",
+    "since": "April 2025",
+    "location_hint": "India",
+    "tagline": "I build brand identities that work beyond the logo.",
+    "tagline_emphasis": "beyond the logo.",
+    "lead": "I’m a brand designer working across identity systems, packaging and digital experiences.",
+    "lead2": "With a background in industrial design and experience spanning 30+ clients, I think about how a brand looks, feels and behaves across every touchpoint — from the first impression to the finished product.",
+    "proof_points": [
+      "30+ clients across industries",
+      "Packaging on retail shelves today",
+      "B.Des, Interactive Technologies — full scholarship"
+    ],
+    "brand_colour": {
+      "name": "Signal Blue",
+      "hex": "#0077FF",
+      "note": "the colour of Roshan's own mark (an animated head that turns 360°)"
+    },
+    "greeting": {
+      "hi": "नमस्ते",
+      "ja": "こんにちは"
+    },
+    "email": "roshanb.design@gmail.com",
+    "links": {
+      "LinkedIn": "https://www.linkedin.com/in/roshan-bharti-877a211a8",
+      "Behance": "https://www.behance.net/ravana"
+    },
+    "resume_pdf": "assets/Roshan_Bharti_Resume.pdf"
+  },
+  "about": {
+    "heading": "I’m interested in what makes a brand feel unmistakably itself.",
+    "heading_emphasis": "unmistakably itself.",
+    "paragraphs": [
+      "I’m Roshan, a brand designer at Moshi Moshi. My work spans brand identities, packaging and digital experiences for clients across industries.",
+      "Having worked across 30+ clients, I’ve learned to approach each project as more than a visual exercise. I’m interested in understanding the problem, finding the right creative direction and building a visual system that holds together wherever the brand shows up.",
+      "My background in Interactive Technologies at Atria University, where I studied on a full scholarship, gave me a multidisciplinary foundation across brand identity, UI/UX, product and industrial design. It continues to shape how I approach design — balancing visual expression with usability and the realities of physical and digital applications.",
+      "I’m looking to keep growing alongside ambitious designers and creative teams, contributing thoughtful work from the first idea through to its execution."
+    ],
+    "experience": [
+      {
+        "role": "Brand Designer",
+        "org": "Moshi Moshi — The Communication Company",
+        "when": "Apr 2025 — Present",
+        "note": "30+ clients across branding, packaging and UI. Designed packaging now on retail shelves."
+      },
+      {
+        "role": "Graphic Design & UI/UX Design Intern",
+        "org": "Drona Aviation",
+        "when": "2023 — 2024",
+        "note": "Posters, social and weekly reels; high-fidelity wireframes for the Pluto Drone app in Figma; website UI/UX."
+      },
+      {
+        "role": "Design Intern",
+        "org": "Icarus Design",
+        "when": "Mar — May 2024",
+        "note": "Competitor analysis, site visits, journey maps, research and high-fidelity prototypes."
+      },
+      {
+        "role": "Graphic Designer",
+        "org": "Atria University",
+        "when": "2023 — 2024",
+        "note": "Posters, brochures, newsletters, social, YouTube and podcast design."
+      }
+    ],
+    "education": {
+      "degree": "Bachelor of Design, Interactive Technologies",
+      "school": "Atria University",
+      "when": "2021 — 2025",
+      "note": "Full academic scholarship. UI/UX, product, industrial, graphic and brand identity design."
+    },
+    "certificate": {
+      "name": "Google UX Design Professional Certificate",
+      "by": "Coursera",
+      "when": "2023 — 2024"
+    },
+    "toolkit": {
+      "Brand": "Identity systems, typography, iconography, packaging, stylesheets and guidelines",
+      "Digital": "UI design, wireframing, prototyping, web design",
+      "Research": "User interviews, journey mapping, competitor analysis, design strategy",
+      "Software": "Illustrator, Photoshop, Figma, Premiere Pro, DaVinci Resolve, Maya, Fusion 360, KeyShot"
+    }
+  },
+  "contact": {
+    "heading": "Have a good brief in mind?",
+    "body": "I’m always interested in thoughtful design challenges, ambitious brands and opportunities to make meaningful work with a good team.",
+    "cta": "Let’s talk."
+  },
+  "projects": [
+    {
+      "slug": "goodshift",
+      "no": "01",
+      "name": "Good Shift",
+      "sector": "Health food & protein",
+      "disciplines": [
+        "Brand Identity",
+        "Packaging",
+        "Digital"
+      ],
+      "headline": "Make healthy feel like everyday food.",
+      "challenge": "In a category dominated by clinical aesthetics and gym-first messaging, Good Shift needed a visual identity that made protein and health foods feel approachable, energetic and part of everyday life.",
+      "approach": "I developed a bold, flexible visual language using expressive typography, a bright colour palette, organic shapes and food-led imagery. The system was designed to carry a consistent personality across packaging, social media and digital touchpoints.",
+      "idea": "Healthy habits, without the hard sell.",
+      "deliverables": [
+        "Logo & brand elements",
+        "Protein pouches",
+        "Tumblers & stickers",
+        "Social posts",
+        "Website",
+        "Tote bag & merch"
+      ],
+      "palette": [
+        {
+          "name": "Orange",
+          "hex": "#E85D28"
+        },
+        {
+          "name": "Green",
+          "hex": "#84BD40"
+        },
+        {
+          "name": "Yellow",
+          "hex": "#F7DC4E"
+        },
+        {
+          "name": "Blue",
+          "hex": "#1F62AD"
+        },
+        {
+          "name": "Concrete",
+          "hex": "#D3D3CF"
+        }
+      ],
+      "palette_source": "sampled from the board",
+      "board_alt": "Good Shift brand presentation: logo, brand elements, social posts, tumblers, stickers, protein pouches, website and tote bag.",
+      "cover_alt": "Good Shift cover: the logo and the line ‘Shift your gut. Shift your life.’ in a ring of grass that opens onto a blue sky, with a runner below."
+    },
+    {
+      "slug": "heibuddy",
+      "no": "02",
+      "name": "Hei Buddy",
+      "sector": "Everyday assistance app",
+      "disciplines": [
+        "Brand Identity",
+        "App UI",
+        "Campaign"
+      ],
+      "headline": "Make everyday assistance feel human.",
+      "challenge": "Hei Buddy needed to feel like a dependable everyday companion rather than another utility app. Its identity had to translate across digital interfaces, physical brand touchpoints and everyday Indian environments.",
+      "approach": "I explored a friendly brand language built around an approachable character, warm colours and recognisable visual elements. The system connects the personality of the brand with its digital experience while maintaining clarity across applications.",
+      "idea": "A little help, built around people.",
+      "deliverables": [
+        "Logo & character",
+        "App screens",
+        "Outdoor & social campaign",
+        "Stationery",
+        "Bags & co-branding",
+        "Storefront"
+      ],
+      "palette": [
+        {
+          "name": "Tomato Red",
+          "hex": "#F65B4B"
+        },
+        {
+          "name": "Stone",
+          "hex": "#E0D9CC"
+        },
+        {
+          "name": "Paper Cream",
+          "hex": "#FFF6E8"
+        },
+        {
+          "name": "Carbon Black",
+          "hex": "#1F1F1F"
+        }
+      ],
+      "palette_source": "from the brand guidelines on the board",
+      "board_alt": "Hei Buddy brand presentation: logo, app screens, outdoor and social campaign, stationery, bags and storefront.",
+      "cover_alt": "Hei Buddy cover: the logo and the line ‘Consider It Done!’ over a man smiling at his phone in a warm living room."
+    },
+    {
+      "slug": "iccs",
+      "no": "03",
+      "name": "ICCS",
+      "sector": "Business technology",
+      "disciplines": [
+        "Brand Identity",
+        "Visual System",
+        "Digital"
+      ],
+      "headline": "Bring a human perspective to business technology.",
+      "challenge": "ICCS needed an identity that communicated technological capability without feeling impersonal. The challenge was to balance corporate credibility with a more human and approachable visual presence.",
+      "approach": "I developed a visual direction using layered blues, indigo tones and gradient treatments, then extended the identity across digital interfaces, presentation materials, stationery and environmental applications.",
+      "idea": "Growth, engineered with a human perspective.",
+      "deliverables": [
+        "Logo & sub-brands",
+        "Colour system",
+        "Stationery & ID card",
+        "Website & app icon",
+        "Outdoor & signage"
+      ],
+      "palette": [
+        {
+          "name": "Icy Blue",
+          "hex": "#A2D1EF"
+        },
+        {
+          "name": "Periwinkle",
+          "hex": "#D1C3F8"
+        },
+        {
+          "name": "Bright Indigo",
+          "hex": "#3844E3"
+        },
+        {
+          "name": "Navy",
+          "hex": "#03017B"
+        }
+      ],
+      "palette_source": "from the brand guidelines on the board",
+      "board_alt": "ICCS brand presentation: logo, colour palette, leadership portrait, stationery, ID card, website, app icon, browser mockup and signage.",
+      "cover_alt": "ICCS cover: the logo over two colleagues working on a laptop on an orange sofa in warm sunlight."
+    },
+    {
+      "slug": "vega",
+      "no": "04",
+      "name": "Vega Group",
+      "sector": "Real estate & infrastructure",
+      "disciplines": [
+        "Brand Identity",
+        "Signage",
+        "Digital"
+      ],
+      "headline": "One identity. Multiple business worlds.",
+      "challenge": "Vega Group operates across commercial, government, hospitality and residential projects. Its identity needed to establish a consistent parent brand while accommodating distinct business lines and project identities.",
+      "approach": "I developed a visual direction centred on a star-inspired mark, navy and burnt-orange colours, and architectural imagery. The system was designed to maintain recognition across signage, stationery, digital applications and related project brands.",
+      "idea": "We foresee. We create. We care.",
+      "deliverables": [
+        "Star mark & logo",
+        "Campaign imagery",
+        "Billboard & signage",
+        "Stationery",
+        "Website",
+        "Project sub-brands"
+      ],
+      "palette": [
+        {
+          "name": "Navy",
+          "hex": "#1A3D59"
+        },
+        {
+          "name": "Burnt Orange",
+          "hex": "#FE5722"
+        },
+        {
+          "name": "Deep Sky",
+          "hex": "#04354C"
+        }
+      ],
+      "palette_source": "sampled from the cover",
+      "board_alt": "Vega Group brand presentation: logo, campaign imagery, billboard, signage, stationery, website and project brands.",
+      "cover_alt": "Vega Group cover: the star mark and logo with the line ‘We Foresee. We Create.’ beside a glass-fronted building under a deep blue sky."
+    },
+    {
+      "slug": "netpure",
+      "no": "05",
+      "name": "Netpure",
+      "sector": "Food staples (atta & dal)",
+      "disciplines": [
+        "Brand Identity",
+        "Packaging",
+        "Retail"
+      ],
+      "headline": "Make everyday staples worth trusting.",
+      "challenge": "Staples like atta and dal are bought on trust and habit, and look alike on a shelf. Netpure needed an identity that felt dependable and premium while staying familiar to everyday Indian households.",
+      "approach": "I developed a bilingual brand system in English and Hindi, built on a confident red and green palette, warm kitchen photography and a dotted map of India. The identity extends from packaging to shopfronts, billboards, stationery and press advertising.",
+      "idea": "The Rhythm of Indian Rasoi.",
+      "deliverables": [
+        "Bilingual logo (English / Hindi)",
+        "Atta & dal packaging",
+        "Billboards & press ads",
+        "Social posts",
+        "Retail & shopfront",
+        "Uniform & stationery"
+      ],
+      "palette": [
+        {
+          "name": "Fiery Terracotta",
+          "hex": "#F04D26"
+        },
+        {
+          "name": "Sea Green",
+          "hex": "#278C44"
+        },
+        {
+          "name": "Amber Gold",
+          "hex": "#FEBE10"
+        },
+        {
+          "name": "Graphite",
+          "hex": "#333333"
+        },
+        {
+          "name": "Ivory",
+          "hex": "#F9F9EF"
+        }
+      ],
+      "palette_source": "from the brand guidelines on the board",
+      "board_alt": "Netpure brand presentation: logo, India map, billboard, social posts, packaging, stationery, store and press ads.",
+      "cover_alt": "Netpure cover: the logo and the line ‘Swad India Ka’ over hands kneading dough on a floured kitchen table."
+    }
+  ]
+}
