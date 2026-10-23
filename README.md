@@ -101,10 +101,10 @@ and rebuild. The build then adds the canonical link and `og:url`, and makes the 
 
 ## Deploy
 
-Upload the folder to any static host. Everything the site needs is in `index.html`, `404.html` and `assets/`. You don't need to upload `src/`, `tools/`, `content.json`, `README.md` or `NEXT-STEPS.md`, but uploading them does no harm.
+Upload the folder to any static host. Everything the site needs is in `index.html`, `404.html` and `assets/`. You don't need to upload `src/`, `tools/`, `content.json` or `README.md`, but uploading them does no harm.
 
 - **Netlify:** drag the folder onto app.netlify.com/drop. `404.html` is picked up automatically.
-- **GitHub Pages:** push the folder to a repository and turn on Pages for the branch. `404.html` is used automatically.
+- **GitHub Pages:** push the folder to a repository and turn on Pages for the branch. `404.html` is used automatically, and the empty `.nojekyll` file makes Pages serve the files as they are. This site is live at https://puneethkumar450.github.io/roshanPortfolio/ from the `main` branch of github.com/puneethkumar450/roshanPortfolio; every push to `main` republishes it.
 - **Vercel:** import the repository as a static project with no build command and the project root as the output folder.
 
 ## Accessibility and motion
